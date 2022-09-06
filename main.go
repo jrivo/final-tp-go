@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-func boardHandler(w http.ResponseWriter, req *http.Request) {
-}
+// func boardHandler(w http.ResponseWriter, req *http.Request) {
+// }
 
 func boatHandler(w http.ResponseWriter, req *http.Request) {
 }
@@ -16,7 +16,8 @@ func hitHandler(w http.ResponseWriter, req *http.Request) {}
 
 func main() {
 	fmt.Println("Starting web server...")
-	http.HandleFunc("/board", boardHandler)
+	board := GenerateBoard(10)
+	http.HandleFunc("/board", BoardHandler(board))
 	http.HandleFunc("/boats", boatHandler)
 	http.HandleFunc("/hit", hitHandler)
 

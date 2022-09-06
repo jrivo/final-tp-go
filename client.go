@@ -16,13 +16,16 @@ func addPlayer() {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Printf("Hello welcome to the battleship game !\n")
 
-	fmt.Print("Enter a username ")
+	fmt.Print("Enter a username: \n ")
 	username, _ := reader.ReadString('\n')
 	fmt.Printf("Player : %s !\n", username)
 
-	fmt.Print("Enter an opponent player: ")
+	fmt.Print("Enter an opponent player: \n ")
 	adress, _ := reader.ReadString('\n')
 	fmt.Printf("Adress : %s !\n", adress)
+
+	//gestion d'erreur : if adress =! adresse Localhost => fmt.Print("Veuillez retaper l'adresse s'il vous plait: \n ")
+
 }
 
 func start() {
@@ -34,7 +37,7 @@ func start() {
 	// {
 
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("Enter a command to attack {username, x, y}\n")
+	fmt.Printf("Enter a command to attack {username, x, y}: \n")
 	attack, _ := reader.ReadString('\n')
 	fmt.Printf("Coord : %s !\n", attack)
 
@@ -42,7 +45,7 @@ func start() {
 
 	/*
 		ELSE {
-				fmt.Printf("Le bataille navale est terminé. Le joueur %s à gagné la partie !\n", gagnant.username)
+				fmt.Printf("The battleship is over. Player ... wins the battleship", gagnant.username)
 			}
 	*/
 }
@@ -55,7 +58,15 @@ func choice() {
 	switch choice {
 	case "add":
 		addPlayer()
-	default:
+	case "start":
 		start()
+
+	default:
+		// gestion d'erreur : fmt.Printf("Enter 'start' to start the game, or 'add' to add other player !\n")
 	}
+}
+
+func play() {
+	addPlayer()
+	choice()
 }

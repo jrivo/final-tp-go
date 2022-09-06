@@ -19,8 +19,10 @@ func main() {
 	http.HandleFunc("/board", boardHandler)
 	http.HandleFunc("/boats", boatHandler)
 	http.HandleFunc("/hit", hitHandler)
+	//go play()
 
 	if err := http.ListenAndServe("0.0.0.0:3001", nil); err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
+
 }

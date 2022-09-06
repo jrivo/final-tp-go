@@ -17,7 +17,6 @@ func main() {
 	http.HandleFunc("/board", BoardHandler(board))
 	http.HandleFunc("/boats", boatHandler)
 	http.HandleFunc("/hit", hitHandler)
-	//go play()
 
 	go PlayGame(board)
 

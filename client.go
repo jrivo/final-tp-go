@@ -7,9 +7,13 @@ import (
 )
 
 type player struct {
-	username []string
-	adress   []string
-	board    Board
+	username string
+	adress   string
+}
+
+func (player *player) initPlayer(username string, adress string) {
+	player.username = username
+	player.adress = adress
 }
 
 func addPlayer() {
@@ -23,6 +27,9 @@ func addPlayer() {
 	fmt.Print("Enter an opponent player: \n ")
 	adress, _ := reader.ReadString('\n')
 	fmt.Printf("Adress : %s !\n", adress)
+
+	var player player
+	player.initPlayer(username, adress)
 
 	//gestion d'erreur : if adress =! adresse Localhost => fmt.Print("Veuillez retaper l'adresse s'il vous plait: \n ")
 
@@ -66,7 +73,7 @@ func choice() {
 	}
 }
 
-func play() {
+func play(board Board) {
 	addPlayer()
 	choice()
 }

@@ -6,9 +6,6 @@ import (
 	"net/http"
 )
 
-// func boardHandler(w http.ResponseWriter, req *http.Request) {
-// }
-
 func boatHandler(w http.ResponseWriter, req *http.Request) {
 }
 

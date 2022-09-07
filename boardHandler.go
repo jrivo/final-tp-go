@@ -21,7 +21,7 @@ func boardHandler(board *Board) func(w http.ResponseWriter, req *http.Request) {
 		case http.MethodGet:
 			// dislay board in html
 			// fmt.Fprintf(w, "Size %d",visualizeHiddenBoard(*board))
-			fmt.Fprintf(w, visualizeHiddenBoard(*board))
+			fmt.Fprintf(w, visualizeHiddenBoardHTML(*board))
 			// print in console
 			fmt.Printf(visualizeHiddenBoard(*board))
 

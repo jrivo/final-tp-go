@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
+	"strconv"
 
 )
 
@@ -225,5 +226,30 @@ func visualizeHiddenBoard(board Board) string{
 	// 	}
 	// }
 
+	return boardString
+}
+
+
+func visualizeHiddenBoardHTML(board Board) string{
+	var boardString string
+	// add header to board string
+	boardString += "<!DOCTYPE html> <html> <head> <style> .box { cursor:pointer; } th, td { padding: 5px; text-align: center; } </style> </head> <body>"
+	for i := 0; i < board.size; i++ {
+		boardString += "<div>"
+		for j := 0; j < board.size; j++ {
+			if isBoardHit(board, Coors{x: j, y: i}) {
+				if isHit(board, Coors{x: j, y: i})  {
+					boardString += "<span class=\"box\" onclick=\"hit("+strconv.Itoa(j)+","+strconv.Itoa(i)+")\">🟢</span>"
+				} else {
+					boardString += "<span class=\"box\" onclick=\"hit("+strconv.Itoa(j)+","+strconv.Itoa(i)+")\">⚫</span>"
+				}
+			} else {
+				boardString += "<span class=\"box\" onclick=\"hit("+strconv.Itoa(j)+","+strconv.Itoa(i)+")\">⚪️</span>"
+			}
+		}
+		boardString += "</div>"
+	}
+	// send post request to  http://localhost:3001/board/hit
+	boardString += "<script> function hit(x, y) { console.log(\"hit\" + x + ' ' + y); var xhttp = new XMLHttpRequest(); xhttp.open(\"POST\", \"http://localhost:3001/hit\", true); xhttp.setRequestHeader(\"Content-type\", \"application/x-www-form-urlencoded\"); xhttp.send(\"x=\"+x+\"&y=\"+y); location.reload();};  </script> </body> </html>"
 	return boardString
 }

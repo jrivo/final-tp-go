@@ -3,7 +3,10 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"net/http"
 	"os"
+	"strconv"
+	"strings"
 )
 
 type OpponentPlayer struct {
@@ -16,15 +19,6 @@ type mainPlayer struct {
 	opponents []OpponentPlayer
 }
 
-// type Opponents struct {
-// 	players []Player
-// }
-
-// func (player *Player) initPlayer(username string, adress string) {
-// 	player.username = username
-// 	player.adress = adress
-// }
-
 func addOpponent(player *mainPlayer) {
 	var opponentPlayer OpponentPlayer
 	var opponentUsername string
@@ -35,6 +29,10 @@ opponentCreationLoop:
 	for {
 		fmt.Print("Enter a username: \n ")
 		if scanner.Scan() {
+			if scanner.Text() == "" {
+				fmt.Println("Invalid username")
+				continue opponentCreationLoop
+			}
 			opponentUsername = scanner.Text()
 			for {
 				fmt.Print("Enter an adress: \n ")
@@ -53,6 +51,27 @@ opponentCreationLoop:
 
 }
 
+func parseCommand(command string) (string, int, int) {
+	var username string
+	var targetX int
+	var targetY int
+	elements := strings.Split(command, " ")
+	username = elements[0]
+	//TODO complete command to handle just username
+	targetX, _ = strconv.Atoi(elements[1])
+	targetY, _ = strconv.Atoi(elements[2])
+	return username, targetX, targetY
+}
+
+func attackOpponent(opponent OpponentPlayer, targetX int, targetY int) {
+	_, err := http.NewRequest(http.MethodPost, "http://"+opponent.adress+"/hit", nil)
+	if err == nil {
+		fmt.Println("Attack successfull")
+	} else {
+		fmt.Println("Error", err)
+	}
+}
+
 func startGame(player mainPlayer) {
 	//generateShip
 	//addShip
@@ -60,19 +79,50 @@ func startGame(player mainPlayer) {
 
 	//IF NB DE SHIP DU JOEUR EST DIFFERENT DE 0 => if isThereShip(...) = TRUE
 	// {
-	fmt.Println(player.opponents)
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("Enter a command to attack {username, x, y}: \n")
-	attack, _ := reader.ReadString('\n')
-	fmt.Printf("Coord : %s !\n", attack)
-
-	//}
-
-	/*
-		ELSE {
-				fmt.Printf("The battleship is over. Player ... wins the battleship", gagnant.username)
+	// fmt.Println(player.opponents)
+	scanner := bufio.NewScanner(os.Stdin)
+commandLoop:
+	for {
+		var targetUsername string
+		var targetPlayer OpponentPlayer
+		var targetX int
+		var targetY int
+		fmt.Printf("Enter a command to attack {username, x, y}: \n")
+		if scanner.Scan() {
+			if scanner.Text() != "" {
+				if (len(strings.Split(scanner.Text(), " "))) != 3 {
+					fmt.Println("Invalid command")
+					continue commandLoop
+				}
+				targetUsername, targetX, targetY = parseCommand(scanner.Text())
+				fmt.Printf("Username: %s, X: %d, Y: %d \n", targetUsername, targetX, targetY)
+			opponentExistLoop:
+				for _, opponent := range player.opponents {
+					fmt.Println(opponent.username, targetUsername)
+					if opponent.username == targetUsername {
+						targetPlayer = opponent
+						break opponentExistLoop
+					}
+					fmt.Println("Opponent doesn't exist")
+					continue commandLoop
+				}
+				attackOpponent(targetPlayer, targetX, targetY)
+				fmt.Printf("Attacking %s at %d, %d \n", targetUsername, targetX, targetY)
+			} else {
+				fmt.Println("Invalid username")
 			}
-	*/
+			continue
+		}
+		// fmt.Printf("Coord : %s !\n", attack)
+
+		//}
+
+		/*
+			ELSE {
+					fmt.Printf("The battleship is over. Player ... wins the battleship", gagnant.username)
+				}
+		*/
+	}
 }
 
 func play(board Board) {

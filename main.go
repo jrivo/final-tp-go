@@ -9,9 +9,6 @@ import (
 
 var board Board
 
-func boardHandler(w http.ResponseWriter, req *http.Request) {
-}
-
 func boatHandler(w http.ResponseWriter, req *http.Request) {
 }
 
@@ -42,11 +39,12 @@ return hitHandler
 func main() {
 	board = GenerateBoard(10)
 	fmt.Println("Starting web server at 0.0.0.0:3001...")
-	http.HandleFunc("/board", boardHandler)
+	http.HandleFunc("/board", BoardHandler)
 	http.HandleFunc("/boats", boatHandler)
 	http.HandleFunc("/hit", hit(1,5))
-
+	go play(board)
 	if err := http.ListenAndServe("0.0.0.0:3001", nil); err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
+
 }

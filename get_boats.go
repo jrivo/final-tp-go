@@ -1,3 +1,13 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+)
+
 func get_boats() int {
 	fmt.Println(">>> nbrBateau")
 	var URL_SERVER = "0.0.0.0:3001"

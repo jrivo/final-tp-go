@@ -13,13 +13,18 @@ import (
 // - 2: bateau touché
 // Libre à vous de choisir un meilleur format de communication.
 
-func boardHandler() func(w http.ResponseWriter, req *http.Request) {
+func boardHandler(board *Board) func(w http.ResponseWriter, req *http.Request) {
 	boardHandlerReturn := func(w http.ResponseWriter, req *http.Request) {
-		fmt.Println(board)
+
+		fmt.Println(*board)
 		switch req.Method {
 		case http.MethodGet:
-			fmt.Fprintf(w, "GOOD\n")
-			fmt.Fprintf(w, "Size %d", board.size)
+			// dislay board in html
+			// fmt.Fprintf(w, "Size %d",visualizeHiddenBoard(*board))
+			fmt.Fprintf(w, visualizeHiddenBoardHTML(*board))
+			// print in console
+			fmt.Printf(visualizeHiddenBoard(*board))
+
 		}
 	}
 	return boardHandlerReturn

@@ -125,6 +125,7 @@ commandLoop:
 	}
 }
 
+<<<<<<< HEAD
 func play(board Board) {
 	var username string
 	var player mainPlayer
@@ -161,4 +162,12 @@ addOrStartLoop:
 
 	}
 	startGame(player)
+=======
+func play(board Board, myChannel1 chan bool) {
+	res := <-myChannel1
+	if res {
+		addPlayer()
+		choice()
+	}
+>>>>>>> cd0d5cf75456301d14c69bca807d5ad6aa954647
 }

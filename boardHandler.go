@@ -13,7 +13,7 @@ import (
 // - 2: bateau touché
 // Libre à vous de choisir un meilleur format de communication.
 
-func BoardHandler(board Board) func(w http.ResponseWriter, req *http.Request) {
+func boardHandler() func(w http.ResponseWriter, req *http.Request) {
 	boardHandlerReturn := func(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(board)
 		switch req.Method {

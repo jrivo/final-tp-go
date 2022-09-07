@@ -39,7 +39,7 @@ return hitHandler
 func main() {
 	board = GenerateBoard(10)
 	fmt.Println("Starting web server at 0.0.0.0:3001...")
-	http.HandleFunc("/board", BoardHandler)
+	http.HandleFunc("/board", boardHandler())
 	http.HandleFunc("/boats", boatHandler)
 	http.HandleFunc("/hit", hit(1,5))
 	go play(board)

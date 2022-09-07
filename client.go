@@ -6,43 +6,61 @@ import (
 	"os"
 )
 
-type player struct {
+type OpponentPlayer struct {
 	username string
 	adress   string
 }
 
-func (player *player) initPlayer(username string, adress string) {
-	player.username = username
-	player.adress = adress
+type mainPlayer struct {
+	username  string
+	opponents []OpponentPlayer
 }
 
-func addPlayer() {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("Hello welcome to the battleship game !\n")
+// type Opponents struct {
+// 	players []Player
+// }
 
-	fmt.Print("Enter a username: \n ")
-	username, _ := reader.ReadString('\n')
-	fmt.Printf("Player : %s !\n", username)
+// func (player *Player) initPlayer(username string, adress string) {
+// 	player.username = username
+// 	player.adress = adress
+// }
 
+func addOpponent(player *mainPlayer) {
+	var opponentPlayer OpponentPlayer
+	var opponentUsername string
+	var opponentAdress string
+	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Print("Enter an opponent player: \n ")
-	adress, _ := reader.ReadString('\n')
-	fmt.Printf("Adress : %s !\n", adress)
-
-	var player player
-	player.initPlayer(username, adress)
-
+opponentCreationLoop:
+	for {
+		fmt.Print("Enter a username: \n ")
+		if scanner.Scan() {
+			opponentUsername = scanner.Text()
+			for {
+				fmt.Print("Enter an adress: \n ")
+				if scanner.Scan() {
+					opponentAdress = scanner.Text()
+					break opponentCreationLoop
+				}
+				fmt.Println("Invalid adress")
+			}
+		}
+		fmt.Println("Invalid username")
+	}
+	opponentPlayer = OpponentPlayer{username: opponentUsername, adress: opponentAdress}
+	player.opponents = append(player.opponents, opponentPlayer)
 	//gestion d'erreur : if adress =! adresse Localhost => fmt.Print("Veuillez retaper l'adresse s'il vous plait: \n ")
 
 }
 
-func start() {
+func startGame(player mainPlayer) {
 	//generateShip
 	//addShip
 	//generateShip
 
 	//IF NB DE SHIP DU JOEUR EST DIFFERENT DE 0 => if isThereShip(...) = TRUE
 	// {
-
+	fmt.Println(player.opponents)
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Printf("Enter a command to attack {username, x, y}: \n")
 	attack, _ := reader.ReadString('\n')
@@ -57,23 +75,40 @@ func start() {
 	*/
 }
 
-func choice() {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("Enter 'start' to start the game, or 'add' to add other player !\n")
-	choice, _ := reader.ReadString('\n')
-
-	switch choice {
-	case "add":
-		addPlayer()
-	case "start":
-		start()
-
-	default:
-		// gestion d'erreur : fmt.Printf("Enter 'start' to start the game, or 'add' to add other player !\n")
-	}
-}
-
 func play(board Board) {
-	addPlayer()
-	choice()
+	var username string
+	var player mainPlayer
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Printf("Hello welcome to the battleship game !\n")
+	for {
+		fmt.Print("Enter a username: \n ")
+		if scanner.Scan() {
+			if scanner.Text() != "" {
+				username = scanner.Text()
+				player = mainPlayer{username: username}
+				break
+			}
+			fmt.Println("Invalid username")
+			continue
+		}
+	}
+	fmt.Printf("Player : %s !\n", username)
+addOrStartLoop:
+	for {
+		addOpponent(&player)
+		fmt.Println("Enter 'start' to start the game or 'add' to add a player")
+		if scanner.Scan() {
+			switch scanner.Text() {
+			case "start":
+				break addOrStartLoop
+			case "add":
+				continue addOrStartLoop
+			default:
+				fmt.Println("Invalid command")
+				continue addOrStartLoop
+			}
+		}
+
+	}
+	startGame(player)
 }

@@ -6,6 +6,8 @@ import (
 	"main/battleship/server"
 	"net/http"
 	"strconv"
+	"runtime"
+	"os/exec"
 )
 
 
@@ -34,6 +36,25 @@ return hitHandler
 }
 
 
+func openbrowser(url string) {
+	var err error
+
+	switch runtime.GOOS {
+	case "linux":
+		err = exec.Command("xdg-open", url).Start()
+	case "windows":
+		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		err = exec.Command("open", url).Start()
+	default:
+		err = fmt.Errorf("unsupported platform")
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+
+}
+
 func main() {
 
 	board := GenerateBoard(10)
@@ -44,6 +65,6 @@ func main() {
 	go http.HandleFunc("/hit", hit(&board,1,5))
 	myChannel1 := make(chan bool)
 	go play(board, myChannel1)
-
+	openbrowser("http://localhost:3001/board")
 	server.Init_server(myChannel1)
 }

@@ -65,6 +65,6 @@ func main() {
 	go http.HandleFunc("/hit", hit(&board,1,5))
 	myChannel1 := make(chan bool)
 	go play(board, myChannel1)
-	openbrowser("http://localhost:3001/board")
+	// openbrowser("http://localhost:3001/board")
 	server.Init_server(myChannel1)
 }

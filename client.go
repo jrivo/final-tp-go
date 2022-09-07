@@ -73,10 +73,17 @@ func choice() {
 	}
 }
 
+func choosePort() string {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Printf("Enter the port of the person you want to play with: \n")
+	port, _ := reader.ReadString('\n')
+	return port
+}
+
 func play(board Board, myChannel1 chan bool) {
 	res := <-myChannel1
 	if res {
-		addPlayer()
-		choice()
+		port := choosePort()
+		openbrowser("http://localhost:" + port + "/board")
 	}
 }

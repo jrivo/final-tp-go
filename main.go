@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"main/battleship/server"
 	"net/http"
 	"strconv"
 )
@@ -32,14 +33,20 @@ func hit(x, y int) func(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+	fmt.Println("----- Board Game -----")
 	board = GenerateBoard(10)
-	fmt.Println("Starting web server at 0.0.0.0:3001...")
-	http.HandleFunc("/board", boardHandler())
-	http.HandleFunc("/boats", boatsHandler(board))
-	http.HandleFunc("/hit", hit(1, 5))
-	go play(board)
-	if err := http.ListenAndServe("0.0.0.0:3001", nil); err != nil {
-		log.Fatal("ListenAndServe: ", err)
-	}
 
+	http.HandleFunc("/board", boardHandler())
+	fmt.Println("/board")
+
+	http.HandleFunc("/boats", boatsHandler(board))
+	fmt.Println("/boats")
+
+	http.HandleFunc("/hit", hit(1, 5))
+	fmt.Println("/hit")
+
+	myChannel1 := make(chan bool)
+	go play(board, myChannel1)
+
+	server.Init_server(myChannel1)
 }

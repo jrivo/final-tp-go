@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"runtime"
 	"os/exec"
+	"flag"
 )
 
 
@@ -57,8 +58,11 @@ func openbrowser(url string) {
 
 func main() {
 
+	port := flag.String("port", "","" )
+	flag.Parse()
+
 	board := GenerateBoard(10)
-	fmt.Println("Starting web server at 0.0.0.0:3001...")
+	fmt.Println("Starting web server at 0.0.0.0:"+*port+"...")
 	go http.HandleFunc("/board", boardHandler(&board))
 	go http.HandleFunc("/boats", boatsHandler(board))
 	// send board reference in hit function
@@ -66,5 +70,5 @@ func main() {
 	myChannel1 := make(chan bool)
 	go play(board, myChannel1)
 	// openbrowser("http://localhost:3001/board")
-	server.Init_server(myChannel1)
+	server.Init_server(myChannel1, *port)
 }

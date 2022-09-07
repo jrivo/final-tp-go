@@ -73,7 +73,10 @@ func choice() {
 	}
 }
 
-func play(board Board) {
-	addPlayer()
-	choice()
+func play(board Board, myChannel1 chan bool) {
+	res := <-myChannel1
+	if res {
+		addPlayer()
+		choice()
+	}
 }

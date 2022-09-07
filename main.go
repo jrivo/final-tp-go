@@ -35,14 +35,15 @@ return hitHandler
 
 
 func main() {
+
 	board := GenerateBoard(10)
 	fmt.Println("Starting web server at 0.0.0.0:3001...")
 	go http.HandleFunc("/board", boardHandler(&board))
-	go http.HandleFunc("/boats", boatHandler)
+	go http.HandleFunc("/boats", boatsHandler(board))
 	// send board reference in hit function
 	go http.HandleFunc("/hit", hit(&board,1,5))
-	// myChannel1 := make(chan bool)
-	// go play(board, myChannel1)
+	myChannel1 := make(chan bool)
+	go play(board, myChannel1)
 
 	server.Init_server(myChannel1)
 }

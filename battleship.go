@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
+
 )
 
 type Coors struct {
@@ -21,6 +22,7 @@ type Ship struct {
 type Board struct {
 	size  int
 	ships []Ship
+	hits []Coors
 }
 
 func generateShip(size int, board Board) Ship {
@@ -130,7 +132,7 @@ func isThereShip(board Board, coors Coors, debug bool) bool {
 	return false
 }
 
-func hitBoard(board Board, coors Coors) Board {
+func hitBoard(board *Board, coors Coors) Board {
 	for i, ship := range board.ships {
 		for _, shipCoors := range getAllShipCoors(ship) {
 			if shipCoors.x == coors.x && shipCoors.y == coors.y {
@@ -141,7 +143,8 @@ func hitBoard(board Board, coors Coors) Board {
 			}
 		}
 	}
-	return board
+	board.hits = append(board.hits, coors)
+	return *board
 }
 
 func remainingships(board Board) int {
@@ -152,6 +155,26 @@ func remainingships(board Board) int {
 		}
 	}
 	return remaining
+}
+
+func isHit(board Board, coors Coors) bool {
+	for _, ship := range board.ships {
+		for _, shipHitCoors := range ship.hits {
+			if shipHitCoors.x == coors.x && shipHitCoors.y == coors.y {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func isBoardHit (board Board, coors Coors) bool {
+	for _, hitCoors := range board.hits {
+		if hitCoors.x == coors.x && hitCoors.y == coors.y {
+			return true
+		}
+	}
+	return false
 }
 
 func visualizeBoard(board Board) {
@@ -165,4 +188,42 @@ func visualizeBoard(board Board) {
 		}
 		fmt.Println()
 	}
+}
+
+
+
+
+func visualizeHiddenBoard(board Board) string{
+	var boardString string
+	for i := 0; i < board.size; i++ {
+		for j := 0; j < board.size; j++ {
+			if isBoardHit(board, Coors{x: j, y: i}) {
+				if isHit(board, Coors{x: j, y: i})  {
+					boardString += "🟢|"
+				} else {
+					boardString += "⚫|"
+				}
+			} else {
+				boardString += "⚪️|"
+			}
+		}
+		boardString += "\n"
+	}
+
+	//  if ship is sunk 🟠
+
+	// for _, ship := range board.ships {
+	// 	if len(ship.hits) == ship.size {
+	// 		for _, coors := range getAllShipCoors(ship) {
+	// 				if ship.orientation == 0 {
+	// 					boardString[coors.x * 2 + coors.y * board.size * 2 + coors.y] = 'H'
+	// 				} else {
+	// 					boardString[coors.x * 2 + coors.y * board.size * 2 + coors.x] = 'H'
+	// 				}
+	// 		}
+			
+	// 	}
+	// }
+
+	return boardString
 }

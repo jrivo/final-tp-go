@@ -130,6 +130,30 @@ func isThereShip(board Board, coors Coors, debug bool) bool {
 	return false
 }
 
+func hitBoard(board Board, coors Coors) Board {
+	for i, ship := range board.ships {
+		for _, shipCoors := range getAllShipCoors(ship) {
+			if shipCoors.x == coors.x && shipCoors.y == coors.y {
+				board.ships[i].hits = append(board.ships[i].hits, shipCoors)
+				if len(board.ships[i].hits) == board.ships[i].size {
+					fmt.Println("SUNK")
+				}
+			}
+		}
+	}
+	return board
+}
+
+func remainingships(board Board) int {
+	remaining := 0
+	for _, ship := range board.ships {
+		if len(ship.hits) != ship.size {
+			remaining++
+		}
+	}
+	return remaining
+}
+
 func visualizeBoard(board Board) {
 	for i := 0; i < board.size; i++ {
 		for j := 0; j < board.size; j++ {
